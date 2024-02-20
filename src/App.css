@@ -1,4 +1,32 @@
-.App {
+.game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gameStatus {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.blockSize {
+  width: 30px;
+  height: 30px;
+}
+
+.gameBoard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.boardRow {
+  display: flex;
+  flex-direction: row;
+}
+
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +63,4 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */
