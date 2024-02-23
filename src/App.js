@@ -85,15 +85,18 @@ function Game() {
     return () => {
       document.removeEventListener('keydown', handleKey);
     };
-  }, [x, y]);
+  }, [x, y]); // 監聽x,y 是否有變化
 
   const status = calStatus(Board, Level);
-  // if (status === "Win") {
-  //   let nextLevel = Level + 1;
-  //   setLevel(nextLevel);
-  //   setBoard(BoardList[Level].board);
-  //   setPlayerPos(BoardList[Level].initPlayerPos);
-  // }
+  if (status === " Win!") {
+    let nextLevel = Level + 1;
+    if (nextLevel < BoardList.length) {
+      setLevel(nextLevel);
+      setPlayerPos(BoardList[nextLevel].initPlayerPos);
+      setBoard(BoardList[nextLevel].board);
+    }
+  }
+
 
   return (
     <>
@@ -103,19 +106,19 @@ function Game() {
             <div key={`row-${rowIdx}`} className="boardRow">{
               row.map((text, colIdx) => {
                 if (text === 0) {
-                  return <GiBrickWall className='blockSize' />
+                  return <GiBrickWall key={`Gi-${colIdx}`} className='blockSize' />
                 }
                 else if (text === 1) {
-                  return <IoAccessibility className='blockSize' />
+                  return <IoAccessibility key={`Io-${colIdx}`} className='blockSize' />
                 }
                 else if (text === 2) {
-                  return <LuDot className='blockSize' />
+                  return <LuDot key={`Lu-${colIdx}`} className='blockSize' />
                 }
                 else if (text === 3) {
-                  return <FaDropbox className='blockSize' />
+                  return <FaDropbox key={`Fa-${colIdx}`} className='blockSize' />
                 }
                 else if (text === 4) {
-                  return <FaFlag className='blockSize' />
+                  return <FaFlag key={`Fa-${colIdx}`} className='blockSize' />
                 }
               })}</div>)
         })}
@@ -145,6 +148,7 @@ function calStatus(board, level) {
 }
 
 export default function App() {
+
   return (
     <>
       <div className="gameBoard">
