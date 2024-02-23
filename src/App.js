@@ -8,9 +8,9 @@ import { LuDot } from "react-icons/lu";
 import { FaFlag } from "react-icons/fa";
 
 function Game() {
-  // const [Level, setLevel] = useState(0);
-  const [Board, setBoard] = useState(BoardList[0].board);
-  const [PlayerPos, setPlayerPos] = useState(BoardList[0].initPlayerPos);
+  const [Level, setLevel] = useState(0);
+  const [Board, setBoard] = useState(BoardList[Level].board);
+  const [PlayerPos, setPlayerPos] = useState(BoardList[Level].initPlayerPos);
   let [x, y] = PlayerPos;
 
   const handleKey = (event) => {
@@ -70,7 +70,7 @@ function Game() {
         break;
     }
 
-    BoardList[0].dotPos.map((dot) => {
+    BoardList[Level].dotPos.map((dot) => {
       if (newBoard[dot[0]][dot[1]] !== 1 & newBoard[dot[0]][dot[1]] !== 3) {
         newBoard[dot[0]][dot[1]] = 4;
         setBoard(newBoard);
@@ -87,7 +87,13 @@ function Game() {
     };
   }, [x, y]);
 
-  const status = calStatus(Board);
+  const status = calStatus(Board, Level);
+  // if (status === "Win") {
+  //   let nextLevel = Level + 1;
+  //   setLevel(nextLevel);
+  //   setBoard(BoardList[Level].board);
+  //   setPlayerPos(BoardList[Level].initPlayerPos);
+  // }
 
   return (
     <>
@@ -122,8 +128,8 @@ function Game() {
   );
 }
 
-function calStatus(board) {
-  let allDots = BoardList[0].dotPos;
+function calStatus(board, level) {
+  let allDots = BoardList[level].dotPos;
   let count = 0;
   for (let i = 0; i < allDots.length; i++) {
     if (board[allDots[i][0]][allDots[i][1]] !== 3) {
