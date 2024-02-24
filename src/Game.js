@@ -151,7 +151,7 @@ class Game extends Component {
     render() {
         return (
             <div className="game" >
-                <h1>Game</h1>
+                <h1>Push Box</h1>
                 <GameBoard />
             </div>
         );

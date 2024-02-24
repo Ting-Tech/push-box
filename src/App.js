@@ -8,7 +8,7 @@ class App extends Component {
     return (
       <Router>
         <div>
-          <h1>Push Box</h1>
+          <h1>Game Center</h1>
           <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <ul className="navbar-nav mr-auto">
               <li><Link to={'/'} className="nav-link"> Home </Link></li>
