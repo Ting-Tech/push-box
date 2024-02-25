@@ -70,12 +70,21 @@ function GameBoard() {
                 break;
         }
 
-        BoardList[Level].dotPos.map((dot) => {
-            if (newBoard[dot[0]][dot[1]] !== 1 & newBoard[dot[0]][dot[1]] !== 3) {
+        for (let i = 0; i < BoardList[Level].dotPos.length; i++) {
+            let dot = BoardList[Level].dotPos[i];
+            if (newBoard[dot[0]][dot[1]] !== 1 &
+                newBoard[dot[0]][dot[1]] !== 3) {
                 newBoard[dot[0]][dot[1]] = 4;
                 setBoard(newBoard);
             }
-        })
+        }
+
+        // BoardList[Level].dotPos.map((dot) => {
+        //     if (newBoard[dot[0]][dot[1]] !== 1 & newBoard[dot[0]][dot[1]] !== 3) {
+        //         newBoard[dot[0]][dot[1]] = 4;
+        //         setBoard(newBoard);
+        //     }
+        // })
     }
 
     useEffect(() => {
