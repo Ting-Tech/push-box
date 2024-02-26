@@ -79,12 +79,6 @@ function GameBoard() {
             }
         }
 
-        // BoardList[Level].dotPos.map((dot) => {
-        //     if (newBoard[dot[0]][dot[1]] !== 1 & newBoard[dot[0]][dot[1]] !== 3) {
-        //         newBoard[dot[0]][dot[1]] = 4;
-        //         setBoard(newBoard);
-        //     }
-        // })
     }
 
     useEffect(() => {
