@@ -78,7 +78,6 @@ function GameBoard() {
                 setBoard(newBoard);
             }
         }
-
     }
 
     useEffect(() => {
@@ -92,6 +91,10 @@ function GameBoard() {
 
     const status = calStatus(Board, Level);
     if (status === " Win!") {
+        levelUp();
+    }
+
+    function levelUp() {
         let nextLevel = Level + 1;
         if (nextLevel < BoardList.length) {
             setLevel(nextLevel);
@@ -100,30 +103,33 @@ function GameBoard() {
         }
     }
 
-
     return (
         <>
             <div>
                 {Board.map((row, rowIdx) => {
                     return (
-                        <div key={`row-${rowIdx}`} className="boardRow">{
-                            row.map((text, colIdx) => {
+                        <div key={`row-${rowIdx}`} className="boardRow">
+                            {row.map((text, colIdx) => {
+                                let component;
+
                                 if (text === 0) {
-                                    return <GiBrickWall key={`Gi-${colIdx}`} className='blockSize' />
+                                    component = <GiBrickWall key={`Gi-${colIdx}`} className='blockSize' />;
+                                } else if (text === 1) {
+                                    component = <IoAccessibility key={`Io-${colIdx}`} className='blockSize' />;
+                                } else if (text === 2) {
+                                    component = <LuDot key={`Lu-${colIdx}`} className='blockSize' />;
+                                } else if (text === 3) {
+                                    component = <FaDropbox key={`Fa-${colIdx}`} className='blockSize' />;
+                                } else if (text === 4) {
+                                    component = <FaFlag key={`Fa-${colIdx}`} className='blockSize' />;
+                                } else {
+                                    // Default case
+                                    component = <span key={`default-${colIdx}`} className='blockSize'></span>;
                                 }
-                                else if (text === 1) {
-                                    return <IoAccessibility key={`Io-${colIdx}`} className='blockSize' />
-                                }
-                                else if (text === 2) {
-                                    return <LuDot key={`Lu-${colIdx}`} className='blockSize' />
-                                }
-                                else if (text === 3) {
-                                    return <FaDropbox key={`Fa-${colIdx}`} className='blockSize' />
-                                }
-                                else if (text === 4) {
-                                    return <FaFlag key={`Fa-${colIdx}`} className='blockSize' />
-                                }
-                            })}</div>)
+
+                                return component;
+                            })}
+                        </div>)
                 })}
             </div>
             <div className="gameStatus">
