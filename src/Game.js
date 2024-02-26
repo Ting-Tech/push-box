@@ -1,6 +1,6 @@
 import './Game.css';
 import { BoardList } from './BoardList.js';
-import { useState, useEffect, Component } from 'react';
+import { useState, useEffect } from 'react';
 import { GiBrickWall } from "react-icons/gi";
 import { FaDropbox } from "react-icons/fa";
 import { IoAccessibility } from "react-icons/io5";
@@ -101,8 +101,8 @@ function GameBoard() {
         let nextLevel = Level + 1;
         if (nextLevel < BoardList.length) {
             setLevel(nextLevel);
-            setPlayerPos(BoardList[nextLevel].initPlayerPos);
             setBoard(BoardList[nextLevel].board);
+            setPlayerPos(BoardList[nextLevel].initPlayerPos);
         }
     }
 
@@ -156,15 +156,13 @@ function calStatus(board, level) {
     }
 }
 
-class Game extends Component {
-    render() {
-        return (
-            <div className="game" >
-                <h1>Push Box</h1>
-                <GameBoard />
-            </div>
-        );
-    }
+function Game() {
+    return (
+        <div className="game" >
+            <h1>Push Box</h1>
+            <GameBoard />
+        </div>
+    );
 }
 
 export default Game;
