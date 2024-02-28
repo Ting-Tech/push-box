@@ -1,6 +1,6 @@
 import './Game.css';
 import { BoardList } from './BoardList.js';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { GiBrickWall } from "react-icons/gi";
 import { FaDropbox } from "react-icons/fa";
 import { IoAccessibility } from "react-icons/io5";
@@ -10,75 +10,89 @@ import { FaFlag } from "react-icons/fa";
 function GameBoard() {
     const [Level, setLevel] = useState(0);
     const [Board, setBoard] = useState(BoardList[Level].board);
+    const [Point, setPoint] = useState(BoardList[Level].dotPos);
     const [PlayerPos, setPlayerPos] = useState(BoardList[Level].initPlayerPos);
-    let [x, y] = PlayerPos;
 
-    const handleKey = (event) => {
-        console.log(event.key);
+    const setPlayerPosTest = (pos) => {
+        // console.log(pos);
+        setPlayerPos(pos);
+    }
+
+    let newBoard = Board.slice(); // 先複製舊的板面
+    const status = calStatus(Board, Level);
+
+    const handleKey = useCallback((event) => {
+        // console.log(event.key);
         let [newX, newY] = PlayerPos;
         let [deltaX, deltaY] = [0, 0];
-
-        switch (event.key) {
-            case 'w':
-                newX--;
-                deltaX--;
-                break;
-            case 'a':
-                newY--;
-                deltaY--;
-                break;
-            case 's':
-                newX++;
-                deltaX++;
-                break;
-            case 'd':
-                newY++;
-                deltaY++;
-                break;
-            default:
-                break;
-        }
-
-        let newBoard = Board.slice(); // 先複製舊的板面
-
-        switch (newBoard[newX][newY]) {
-            case 2:
-                newBoard[newX][newY] = 1;
-                newBoard[x][y] = 2;
-                setBoard(newBoard);
-                setPlayerPos([newX, newY]);
-                break;
-            case 3:
-                let [nextX, nextY] = [0, 0];
-                nextX = newX + deltaX;
-                nextY = newY + deltaY;
-                if (newBoard[nextX][nextY] !== 0 & newBoard[nextX][nextY] !== 3) {
-                    newBoard[newX][newY] = 1;
-                    newBoard[x][y] = 2;
-                    newBoard[nextX][nextY] = 3;
-                    setBoard(newBoard);
-                    setPlayerPos([newX, newY]);
-                }
-                break;
-            case 4:
-                newBoard[newX][newY] = 1;
-                newBoard[x][y] = 2;
-                setBoard(newBoard);
-                setPlayerPos([newX, newY]);
-                break;
-            default:
-                break;
-        }
-
-        for (let i = 0; i < BoardList[Level].dotPos.length; i++) {
-            let dot = BoardList[Level].dotPos[i];
-            if (newBoard[dot[0]][dot[1]] !== 1 &
-                newBoard[dot[0]][dot[1]] !== 3) {
-                newBoard[dot[0]][dot[1]] = 4;
+        if (status === " Win!") {
+            let nextLevel = Level + 1;
+            let newBoard = BoardList[nextLevel].board.slice(); // 先複製舊的板面
+            if (nextLevel < BoardList.length) {
+                setLevel(nextLevel);
+                newBoard[PlayerPos[0]][PlayerPos[1]] = 2;
+                newBoard[BoardList[nextLevel].initPlayerPos[0]]
+                [BoardList[nextLevel].initPlayerPos[1]] = 1;
+                setPlayerPosTest(BoardList[nextLevel].initPlayerPos);
+                setPoint(BoardList[nextLevel].dotPos);
                 setBoard(newBoard);
             }
         }
-    }
+        else {
+            switch (event.key) {
+                case 'w':
+                    newX--;
+                    deltaX--;
+                    break;
+                case 'a':
+                    newY--;
+                    deltaY--;
+                    break;
+                case 's':
+                    newX++;
+                    deltaX++;
+                    break;
+                case 'd':
+                    newY++;
+                    deltaY++;
+                    break;
+                default:
+                    break;
+            }
+
+            switch (newBoard[newX][newY]) {
+                case 2:
+                    newBoard[newX][newY] = 1;
+                    newBoard[PlayerPos[0]][PlayerPos[1]] = 2;
+                    reductFlag();
+                    setPlayerPosTest([newX, newY]);
+                    setBoard(newBoard);
+                    break;
+                case 3:
+                    let [nextX, nextY] = [0, 0];
+                    nextX = newX + deltaX;
+                    nextY = newY + deltaY;
+                    if (newBoard[nextX][nextY] !== 0 & newBoard[nextX][nextY] !== 3) {
+                        newBoard[newX][newY] = 1;
+                        newBoard[nextX][nextY] = 3;
+                        newBoard[PlayerPos[0]][PlayerPos[1]] = 2;
+                        reductFlag();
+                        setBoard(newBoard);
+                        setPlayerPosTest([newX, newY]);
+                    }
+                    break;
+                case 4:
+                    newBoard[newX][newY] = 1;
+                    newBoard[PlayerPos[0]][PlayerPos[1]] = 2;
+                    reductFlag();
+                    setBoard(newBoard);
+                    setPlayerPosTest([newX, newY]);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }, [Board, Level, PlayerPos]);
 
     useEffect(() => {
         // 添加事件監聽器
@@ -87,19 +101,14 @@ function GameBoard() {
         return () => {
             document.removeEventListener('keydown', handleKey);
         };
-    }, [x, y]); // 監聽x,y 是否有變化
+    }, [PlayerPos, handleKey]); // 監聽x,y 是否有變化
 
-    const status = calStatus(Board, Level);
-    if (status === " Win!") {
-        levelUp();
-    }
-
-    function levelUp() {
-        let nextLevel = Level + 1;
-        if (nextLevel < BoardList.length) {
-            setLevel(nextLevel);
-            setBoard(BoardList[nextLevel].board);
-            setPlayerPos(BoardList[nextLevel].initPlayerPos);
+    function reductFlag() {
+        for (let x = 0; x < Point.length; x++) {
+            if (newBoard[Point[x][0]][Point[x][1]] != 1 & newBoard[Point[x][0]][Point[x][1]] != 3) {
+                newBoard[Point[x][0]][Point[x][1]] = 4;
+            }
+            setBoard(newBoard);
         }
     }
 
@@ -124,7 +133,7 @@ function GameBoard() {
                                     component = <FaFlag key={`Fa-${colIdx}`} className='blockSize' />;
                                 } else {
                                     // Default case
-                                    component = <span key={`default-${colIdx}`} className='blockSize'></span>;
+                                    component = <LuDot key={`Lu-${colIdx}`} className='blockSize' />;
                                 }
 
                                 return component;
