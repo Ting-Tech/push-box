@@ -8,20 +8,35 @@ import { LuDot } from "react-icons/lu";
 import { FaFlag } from "react-icons/fa";
 
 let elapsedTime = 0;
-let timerInterval;
 let timerRunning = false;
-start();
 
-function start() {
-    if (!timerRunning) {
-        timerInterval = setInterval(() => { elapsedTime++; }, 1000);
-        timerRunning = true;
+function Time() {
+    const [elapsedTime, setElapsedTime] = useState(0);
+    let timerInterval;
+
+    const start = () => {
+        if (!timerRunning) {
+            timerInterval = setInterval(() => {
+                setElapsedTime(prevTime => prevTime + 1);
+            }, 1000);
+            timerRunning = true;
+        }
     }
+
+    useEffect(() => {
+        start();
+
+        // 在組件卸載時清除計時器
+        return () => {
+            clearInterval(timerInterval);
+            timerRunning = false;
+        };
+    }, [elapsedTime]); // 空的依賴項目表示僅在元件初次渲染時運行
+
+    return (
+        <div>{elapsedTime}</div>
+    );
 }
-function pause() {
-    clearInterval(timerInterval); timerRunning = false;
-}
-function reset() { elapsedTime = 0; }
 
 function GameBoard() {
     const [Level, setLevel] = useState(0);
@@ -30,7 +45,7 @@ function GameBoard() {
     const [PlayerPos, setPlayerPos] = useState(BoardList[Level].initPlayerPos);
 
     const setPlayerPosTest = (pos) => {
-        console.log(pos);
+        // console.log(pos);
         setPlayerPos(pos);
     }
 
@@ -41,10 +56,11 @@ function GameBoard() {
         // console.log(event.key);
         let [newX, newY] = PlayerPos;
         let [deltaX, deltaY] = [0, 0];
-        if (status === " Win!") {
+        if ((status === " Win!")) {
             let nextLevel = Level + 1;
-            let newBoard = BoardList[nextLevel].board.slice(); // 先複製舊的板面
-            if (nextLevel < BoardList.length) {
+            if (nextLevel < (BoardList.length)) {
+                let newBoard = BoardList[nextLevel].board.slice(); // 先複製舊的板面
+                console.log("level up");
                 setLevel(nextLevel);
                 newBoard[PlayerPos[0]][PlayerPos[1]] = 2;
                 newBoard[BoardList[nextLevel].initPlayerPos[0]]
@@ -54,63 +70,64 @@ function GameBoard() {
                 setBoard(newBoard);
             }
             else {
-                pause();
                 console.log(elapsedTime);
-                reset();
+                let timerRunning = false;
             }
         }
         else {
-            switch (event.key) {
-                case 'w':
-                    newX--;
-                    deltaX--;
-                    break;
-                case 'a':
-                    newY--;
-                    deltaY--;
-                    break;
-                case 's':
-                    newX++;
-                    deltaX++;
-                    break;
-                case 'd':
-                    newY++;
-                    deltaY++;
-                    break;
-                default:
-                    break;
-            }
+            if ((Level <= (BoardList.length - 1)) & status !== " Win!") {
+                switch (event.key) {
+                    case 'w':
+                        newX--;
+                        deltaX--;
+                        break;
+                    case 'a':
+                        newY--;
+                        deltaY--;
+                        break;
+                    case 's':
+                        newX++;
+                        deltaX++;
+                        break;
+                    case 'd':
+                        newY++;
+                        deltaY++;
+                        break;
+                    default:
+                        break;
+                }
 
-            switch (newBoard[newX][newY]) {
-                case 2:
-                    newBoard[newX][newY] = 1;
-                    newBoard[PlayerPos[0]][PlayerPos[1]] = 2;
-                    reductFlag();
-                    setPlayerPosTest([newX, newY]);
-                    setBoard(newBoard);
-                    break;
-                case 3:
-                    let [nextX, nextY] = [0, 0];
-                    nextX = newX + deltaX;
-                    nextY = newY + deltaY;
-                    if (newBoard[nextX][nextY] !== 0 & newBoard[nextX][nextY] !== 3) {
+                switch (newBoard[newX][newY]) {
+                    case 2:
                         newBoard[newX][newY] = 1;
-                        newBoard[nextX][nextY] = 3;
+                        newBoard[PlayerPos[0]][PlayerPos[1]] = 2;
+                        reductFlag();
+                        setPlayerPosTest([newX, newY]);
+                        setBoard(newBoard);
+                        break;
+                    case 3:
+                        let [nextX, nextY] = [0, 0];
+                        nextX = newX + deltaX;
+                        nextY = newY + deltaY;
+                        if (newBoard[nextX][nextY] !== 0 & newBoard[nextX][nextY] !== 3) {
+                            newBoard[newX][newY] = 1;
+                            newBoard[nextX][nextY] = 3;
+                            newBoard[PlayerPos[0]][PlayerPos[1]] = 2;
+                            reductFlag();
+                            setBoard(newBoard);
+                            setPlayerPosTest([newX, newY]);
+                        }
+                        break;
+                    case 4:
+                        newBoard[newX][newY] = 1;
                         newBoard[PlayerPos[0]][PlayerPos[1]] = 2;
                         reductFlag();
                         setBoard(newBoard);
                         setPlayerPosTest([newX, newY]);
-                    }
-                    break;
-                case 4:
-                    newBoard[newX][newY] = 1;
-                    newBoard[PlayerPos[0]][PlayerPos[1]] = 2;
-                    reductFlag();
-                    setBoard(newBoard);
-                    setPlayerPosTest([newX, newY]);
-                    break;
-                default:
-                    break;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }, [Board, Level, PlayerPos]);
@@ -191,7 +208,7 @@ function Game() {
         <div className="game" >
             <h1>Push Box</h1>
             <GameBoard />
-            <div>{elapsedTime}</div>
+            <Time />
         </div>
     );
 }
