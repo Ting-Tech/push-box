@@ -7,6 +7,22 @@ import { IoAccessibility } from "react-icons/io5";
 import { LuDot } from "react-icons/lu";
 import { FaFlag } from "react-icons/fa";
 
+let elapsedTime = 0;
+let timerInterval;
+let timerRunning = false;
+start();
+
+function start() {
+    if (!timerRunning) {
+        timerInterval = setInterval(() => { elapsedTime++; }, 1000);
+        timerRunning = true;
+    }
+}
+function pause() {
+    clearInterval(timerInterval); timerRunning = false;
+}
+function reset() { elapsedTime = 0; }
+
 function GameBoard() {
     const [Level, setLevel] = useState(0);
     const [Board, setBoard] = useState(BoardList[Level].board);
@@ -14,7 +30,7 @@ function GameBoard() {
     const [PlayerPos, setPlayerPos] = useState(BoardList[Level].initPlayerPos);
 
     const setPlayerPosTest = (pos) => {
-        // console.log(pos);
+        console.log(pos);
         setPlayerPos(pos);
     }
 
@@ -36,6 +52,11 @@ function GameBoard() {
                 setPlayerPosTest(BoardList[nextLevel].initPlayerPos);
                 setPoint(BoardList[nextLevel].dotPos);
                 setBoard(newBoard);
+            }
+            else {
+                pause();
+                console.log(elapsedTime);
+                reset();
             }
         }
         else {
@@ -105,7 +126,7 @@ function GameBoard() {
 
     function reductFlag() {
         for (let x = 0; x < Point.length; x++) {
-            if (newBoard[Point[x][0]][Point[x][1]] != 1 & newBoard[Point[x][0]][Point[x][1]] != 3) {
+            if (newBoard[Point[x][0]][Point[x][1]] !== 1 & newBoard[Point[x][0]][Point[x][1]] !== 3) {
                 newBoard[Point[x][0]][Point[x][1]] = 4;
             }
             setBoard(newBoard);
@@ -170,6 +191,7 @@ function Game() {
         <div className="game" >
             <h1>Push Box</h1>
             <GameBoard />
+            <div>{elapsedTime}</div>
         </div>
     );
 }
