@@ -6,49 +6,14 @@ import { FaDropbox } from "react-icons/fa";
 import { IoAccessibility } from "react-icons/io5";
 import { LuDot } from "react-icons/lu";
 import { FaFlag } from "react-icons/fa";
-
-let timerRunning = false;
-
-function Time() {
-    const [elapsedTime, setElapsedTime] = useState(0);
-    const [isTimerRunning, setIsTimerRunning] = useState(true);
-    let timerInterval;
-    const start = () => {
-        if (!timerRunning) {
-            timerInterval = setInterval(() => {
-                setElapsedTime(prevTime => prevTime + 1);
-            }, 1000);
-            timerRunning = true;
-        }
-    }
-
-    const stop = () => {
-        if (timerRunning) {
-            timerRunning = false;
-            setIsTimerRunning(false);
-        }
-    }
-
-    useEffect(() => {
-        start();
-
-        // 在組件卸載時清除計時器
-        return () => {
-            clearInterval(timerInterval);
-            stop();
-        };
-    }, [elapsedTime, isTimerRunning]); // 空的依賴項目表示僅在元件初次渲染時運行
-
-    return (
-        <div>{elapsedTime}</div>
-    );
-}
+import { useStopWatch } from './StopWatch';
 
 function GameBoard() {
     const [Level, setLevel] = useState(0);
     const [Board, setBoard] = useState(BoardList[Level].board);
     const [Point, setPoint] = useState(BoardList[Level].dotPos);
     const [PlayerPos, setPlayerPos] = useState(BoardList[Level].initPlayerPos);
+    const { time, isRunning, startAndStop, reset } = useStopWatch();
 
     const setPlayerPosTest = (pos) => {
         // console.log(pos);
@@ -59,11 +24,15 @@ function GameBoard() {
     const status = calStatus(Board, Level);
 
     const handleKey = useCallback((event) => {
+        if (!isRunning) {
+            startAndStop();
+        }
         // console.log(event.key);
         let [newX, newY] = PlayerPos;
         let [deltaX, deltaY] = [0, 0];
         if ((status === " Win!")) {
             let nextLevel = Level + 1;
+            startAndStop();
             if (nextLevel < (BoardList.length)) {
                 let newBoard = BoardList[nextLevel].board.slice(); // 先複製舊的板面
                 console.log("level up");
@@ -76,8 +45,6 @@ function GameBoard() {
                 setBoard(newBoard);
             }
             else {
-                // console.log(elapsedTime);
-                // timerRunning = false;
             }
         }
         else {
@@ -189,7 +156,7 @@ function GameBoard() {
                 <h2>Status:</h2>
                 <h2>{status}</h2>
             </div>
-            <Time />
+            <p>Time: {time / 10} sec</p>
         </>
     );
 }
