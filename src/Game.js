@@ -7,13 +7,12 @@ import { IoAccessibility } from "react-icons/io5";
 import { LuDot } from "react-icons/lu";
 import { FaFlag } from "react-icons/fa";
 
-let elapsedTime = 0;
 let timerRunning = false;
 
 function Time() {
     const [elapsedTime, setElapsedTime] = useState(0);
+    const [isTimerRunning, setIsTimerRunning] = useState(true);
     let timerInterval;
-
     const start = () => {
         if (!timerRunning) {
             timerInterval = setInterval(() => {
@@ -23,15 +22,22 @@ function Time() {
         }
     }
 
+    const stop = () => {
+        if (timerRunning) {
+            timerRunning = false;
+            setIsTimerRunning(false);
+        }
+    }
+
     useEffect(() => {
         start();
 
         // 在組件卸載時清除計時器
         return () => {
             clearInterval(timerInterval);
-            timerRunning = false;
+            stop();
         };
-    }, [elapsedTime]); // 空的依賴項目表示僅在元件初次渲染時運行
+    }, [elapsedTime, isTimerRunning]); // 空的依賴項目表示僅在元件初次渲染時運行
 
     return (
         <div>{elapsedTime}</div>
@@ -70,8 +76,8 @@ function GameBoard() {
                 setBoard(newBoard);
             }
             else {
-                console.log(elapsedTime);
-                let timerRunning = false;
+                // console.log(elapsedTime);
+                // timerRunning = false;
             }
         }
         else {
@@ -183,6 +189,7 @@ function GameBoard() {
                 <h2>Status:</h2>
                 <h2>{status}</h2>
             </div>
+            <Time />
         </>
     );
 }
@@ -208,7 +215,6 @@ function Game() {
         <div className="game" >
             <h1>Push Box</h1>
             <GameBoard />
-            <Time />
         </div>
     );
 }
