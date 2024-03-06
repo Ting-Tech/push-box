@@ -45,6 +45,7 @@ function GameBoard() {
                 setBoard(newBoard);
             }
             else {
+                console.log(time / 10);
             }
         }
         else {
