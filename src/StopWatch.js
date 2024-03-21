@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
+import { useGameContext } from "./GameProvider";
 
 const StopWatchContext = createContext();
 
 export const StopWatchProvider = ({ children }) => {
-    const [time, setTime] = useState(0);
+    const { stopWatchTimevalue, setStopWatch } = useGameContext();
     const [isRunning, setIsRunning] = useState(false);
 
     const startAndStop = () => {
@@ -11,11 +12,10 @@ export const StopWatchProvider = ({ children }) => {
     };
 
     const reset = () => {
-        setTime(0);
+        setStopWatch(0);
     };
 
     const contextValue = {
-        time,
         isRunning,
         startAndStop,
         reset,
@@ -24,11 +24,11 @@ export const StopWatchProvider = ({ children }) => {
     useEffect(() => {
         let intervalId;
         if (isRunning) {
-            // setting time from 0 to 1 every 10 milisecond using javascript setInterval method
-            intervalId = setInterval(() => setTime(time + 1), 100);
+            // setting stopWatchTimevalue from 0 to 1 every 10 milisecond using javascript setInterval method
+            intervalId = setInterval(() => setStopWatch(stopWatchTimevalue + 1), 100);
         }
         return () => clearInterval(intervalId);
-    }, [isRunning, time]);
+    }, [isRunning, stopWatchTimevalue]);
 
     return (
         <StopWatchContext.Provider value={contextValue}>

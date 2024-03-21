@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useContext, createContext } from 'react';
+import { useGameContext } from "./GameProvider";
 const LOCAL_STORAGE_KEY = "rank:savedTasks";
 
-export default function Rank() {
-    const [scores, setScores] = useState([]);
+const RankContext = createContext();
+
+export const RankProvider = ({ children }) => {
+    const { stopWatchTimevalue, rankValue, setRank } = useGameContext();
 
     function loadSaved() {
         const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
         if (saved) {
-            setScores(JSON.parse(saved));
+            setRank(JSON.parse(saved));
         }
     }
 
@@ -15,15 +18,15 @@ export default function Rank() {
         loadSaved();
     }, [])
 
-    function setTasksAndSave(newScores) {
-        setScores(newScores);
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newScores));
+    function setTasksAndSave(newRank) {
+        setRank(newRank);
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newRank));
     }
 
-    function addScore(newScore) {
-        const newScores = [...scores, newScore];
-        sortScores(newScores);
-        setTasksAndSave(newScores);
+    function addRank(newNameSocre) {
+        const newRank = [...rankValue, newNameSocre];
+        sortScores(newRank);
+        setTasksAndSave(newRank);
     }
 
     function sortScores(scores) {
@@ -31,9 +34,28 @@ export default function Rank() {
         scores.sort(sortMethod);
     }
 
+    const contextValue = {
+        addRank,
+        setTasksAndSave
+    };
+
     return (
-        <div>
-            {scores}
-        </div>
-    )
+        <RankContext.Provider value={contextValue}>
+            {children}
+        </RankContext.Provider>
+    );
+};
+
+export const useRank = () => {
+    const context = useContext(RankContext);
+    if (!context) {
+        throw new Error('useRank must be used within a RankProvider');
+    }
+    return context;
+};
+
+export default function () {
+    const { rankValue } = useGameContext();
+
+    return rankValue;
 }

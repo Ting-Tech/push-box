@@ -7,13 +7,15 @@ import { IoAccessibility } from "react-icons/io5";
 import { LuDot } from "react-icons/lu";
 import { FaFlag } from "react-icons/fa";
 import { useStopWatch } from './StopWatch';
+import { useGameContext } from "./GameProvider";
 
 function GameBoard() {
     const [Level, setLevel] = useState(0);
     const [Board, setBoard] = useState(BoardList[Level].board);
     const [Point, setPoint] = useState(BoardList[Level].dotPos);
     const [PlayerPos, setPlayerPos] = useState(BoardList[Level].initPlayerPos);
-    const { time, isRunning, startAndStop, reset } = useStopWatch();
+    const { isRunning, startAndStop, reset } = useStopWatch();
+    const { stopWatchTimevalue } = useGameContext();
 
     const setPlayerPosTest = (pos) => {
         // console.log(pos);
@@ -45,7 +47,7 @@ function GameBoard() {
                 setBoard(newBoard);
             }
             else {
-                console.log(time / 10);
+                console.log(stopWatchTimevalue / 10);
             }
         }
         else {
@@ -157,7 +159,7 @@ function GameBoard() {
                 <h2>Status:</h2>
                 <h2>{status}</h2>
             </div>
-            <p>Time: {time / 10} sec</p>
+            <p>stopWatchTimevalue: {stopWatchTimevalue / 10} sec</p>
         </>
     );
 }
