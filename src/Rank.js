@@ -5,7 +5,7 @@ const LOCAL_STORAGE_KEY = "rank:savedTasks";
 const RankContext = createContext();
 
 export const RankProvider = ({ children }) => {
-    const { stopWatchTimevalue, rankValue, setRank } = useGameContext();
+    const { rankValue, setRank, user, setUserValue } = useGameContext();
 
     function loadSaved() {
         const saved = localStorage.getItem(LOCAL_STORAGE_KEY);

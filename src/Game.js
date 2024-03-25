@@ -8,6 +8,7 @@ import { LuDot } from "react-icons/lu";
 import { FaFlag } from "react-icons/fa";
 import { useStopWatch } from './StopWatch';
 import { useGameContext } from "./GameProvider";
+import { useRank } from "./Rank.js"
 
 function GameBoard() {
     const [Level, setLevel] = useState(0);
@@ -16,6 +17,7 @@ function GameBoard() {
     const [PlayerPos, setPlayerPos] = useState(BoardList[Level].initPlayerPos);
     const { isRunning, startAndStop, reset } = useStopWatch();
     const { stopWatchTimevalue } = useGameContext();
+    const { addRank, setTasksAndSave } = useRank();
 
     const setPlayerPosTest = (pos) => {
         // console.log(pos);

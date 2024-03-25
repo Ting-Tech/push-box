@@ -5,6 +5,11 @@ export const GameContext = createContext();
 export const GameProvider = ({ children }) => {
     const [stopWatchTimevalue, setStopWatchTimevalue] = useState(0);
     const [rankValue, setRankValue] = useState([]);
+    const [user, setUser] = useState([]);
+
+    const setUserValue = (name) => {
+        setUser(name);
+    }
 
     const setRank = (nameScore) => {
         setRankValue(nameScore);
@@ -18,7 +23,9 @@ export const GameProvider = ({ children }) => {
         stopWatchTimevalue,
         setStopWatch,
         rankValue,
-        setRank
+        setRank,
+        user,
+        setUserValue
     };
 
     return (
