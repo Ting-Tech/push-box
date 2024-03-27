@@ -16,8 +16,16 @@ function GameBoard() {
     const [Point, setPoint] = useState(BoardList[Level].dotPos);
     const [PlayerPos, setPlayerPos] = useState(BoardList[Level].initPlayerPos);
     const { isRunning, startAndStop } = useStopWatch();
-    const { stopWatchTimevalue } = useGameContext();
+    const { stopWatchTimevalue, setUserValue, user, isFirstRun } = useGameContext();
     const { addRank } = useRank();
+
+    useEffect(() => {
+        if (!isFirstRun)
+            return;
+
+        let name = prompt("Please input your name")
+        setUserValue(name);
+    }, [setUserValue, isFirstRun]);
 
     const setPlayerPosTest = (pos) => {
         // console.log(pos);
@@ -49,7 +57,7 @@ function GameBoard() {
                 setBoard(newBoard);
             }
             else {
-                addRank("player1", (stopWatchTimevalue / 10));
+                addRank(user, (stopWatchTimevalue / 10));
                 console.log(stopWatchTimevalue / 10);
             }
         }

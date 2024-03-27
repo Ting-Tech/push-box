@@ -1,11 +1,14 @@
-import React, { useState, useContext, createContext } from "react";
+import React, { useState, useContext, createContext, useEffect } from "react";
 
 export const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
     const [stopWatchTimevalue, setStopWatchTimevalue] = useState(0);
     const [rankValue, setRankValue] = useState([]);
-    const [user, setUser] = useState([]);
+    const [user, setUser] = useState();
+    const [isFirstRun, setisFirstRun] = useState(true);
+
+    useEffect(() => setisFirstRun(false), []);
 
     const setUserValue = (name) => {
         setUser(name);
@@ -19,13 +22,19 @@ export const GameProvider = ({ children }) => {
         setStopWatchTimevalue(value);
     }
 
+    const setisFirstRunValue = (v) => {
+        setisFirstRun(v);
+    }
+
     const contextValue = {
         stopWatchTimevalue,
         setStopWatch,
         rankValue,
         setRank,
         user,
-        setUserValue
+        setUserValue,
+        isFirstRun,
+        setisFirstRunValue
     };
 
     return (

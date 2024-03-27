@@ -68,7 +68,7 @@ export default function () {
                 )
                 // return JSON.stringify(rowRank)
             })}
-            <pre>{JSON.stringify(rankValue)}</pre>
+            {/* <pre>{JSON.stringify(rankValue)}</pre> */}
         </div>
     )
 }
