@@ -8,10 +8,11 @@ export const GameProvider = ({ children }) => {
     const [user, setUser] = useState();
     const [isFirstRun, setisFirstRun] = useState(true);
 
-    useEffect(() => setisFirstRun(false), []);
+    // useEffect(() => setisFirstRun(false), []);
 
     const setUserValue = (name) => {
         setUser(name);
+        setisFirstRun(false);
     }
 
     const setRank = (nameScore) => {
