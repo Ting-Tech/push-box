@@ -4,7 +4,7 @@ import { StopWatchProvider } from './StopWatch';
 import { GameProvider } from './GameProvider';
 import Game from './Game';
 import Home from './Home';
-import Rank from './Rank';
+import Rank, { RankProvider } from './Rank';
 
 class App extends Component {
   render() {
@@ -12,21 +12,23 @@ class App extends Component {
       <Router>
         <GameProvider>
           <StopWatchProvider>
-            <div>
-              <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <ul className="navbar-nav mr-auto">
-                  <li><Link to={'/'} className="nav-link"> Game Center </Link></li>
-                  <li><Link to={'/game'} className="nav-link"> Game </Link></li>
-                  <li><Link to={'/rank'} className="nav-link"> Rank </Link></li>
-                </ul>
-              </nav>
-              <hr />
-              <Routes>
-                <Route exact path='/' element={<Home />} />
-                <Route path='/game' element={<Game />} />
-                <Route path='/rank' element={<Rank />} />
-              </Routes>
-            </div>
+            <RankProvider>
+              <div>
+                <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                  <ul className="navbar-nav mr-auto">
+                    <li><Link to={'/'} className="nav-link"> Game Center </Link></li>
+                    <li><Link to={'/game'} className="nav-link"> Game </Link></li>
+                    <li><Link to={'/rank'} className="nav-link"> Rank </Link></li>
+                  </ul>
+                </nav>
+                <hr />
+                <Routes>
+                  <Route exact path='/' element={<Home />} />
+                  <Route path='/game' element={<Game />} />
+                  <Route path='/rank' element={<Rank />} />
+                </Routes>
+              </div>
+            </RankProvider>
           </StopWatchProvider>
         </GameProvider>
       </Router>

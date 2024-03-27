@@ -15,9 +15,9 @@ function GameBoard() {
     const [Board, setBoard] = useState(BoardList[Level].board);
     const [Point, setPoint] = useState(BoardList[Level].dotPos);
     const [PlayerPos, setPlayerPos] = useState(BoardList[Level].initPlayerPos);
-    const { isRunning, startAndStop, reset } = useStopWatch();
+    const { isRunning, startAndStop } = useStopWatch();
     const { stopWatchTimevalue } = useGameContext();
-    const { addRank, setTasksAndSave } = useRank();
+    const { addRank } = useRank();
 
     const setPlayerPosTest = (pos) => {
         // console.log(pos);
@@ -49,6 +49,7 @@ function GameBoard() {
                 setBoard(newBoard);
             }
             else {
+                addRank("player1", (stopWatchTimevalue / 10));
                 console.log(stopWatchTimevalue / 10);
             }
         }

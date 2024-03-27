@@ -5,7 +5,7 @@ const LOCAL_STORAGE_KEY = "rank:savedTasks";
 const RankContext = createContext();
 
 export const RankProvider = ({ children }) => {
-    const { rankValue, setRank, user, setUserValue } = useGameContext();
+    const { rankValue, setRank } = useGameContext();
 
     function loadSaved() {
         const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -23,8 +23,8 @@ export const RankProvider = ({ children }) => {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newRank));
     }
 
-    function addRank(newNameSocre) {
-        const newRank = [...rankValue, newNameSocre];
+    function addRank(newName, newScore) {
+        const newRank = [...rankValue, { name: newName, score: newScore }];
         sortScores(newRank);
         setTasksAndSave(newRank);
     }
@@ -57,5 +57,18 @@ export const useRank = () => {
 export default function () {
     const { rankValue } = useGameContext();
 
-    return rankValue;
+    return (
+        <div>
+            {rankValue.map((rowRank) => {
+                return (
+                    <div>
+                        {rowRank.name}&nbsp;
+                        {rowRank.score}
+                    </div >
+                )
+                // return JSON.stringify(rowRank)
+            })}
+            <pre>{JSON.stringify(rankValue)}</pre>
+        </div>
+    )
 }
